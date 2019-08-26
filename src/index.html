@@ -1,18 +1,87 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="./style/style.css">
-    <title>CCF Attendance</title>
-  </head>
-  <body>
-    <div class="sidenav">
-      <a href="index.html">Dashboard</a>
-      <a href="attendance.html">Take Attendance</a>
-      <a href="manage.html">Manage Students</a>
-    </div>
-    <div class="main">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./style/style.css">
+  <title>CCF Attendance</title>
+</head>
+<body>
+<div class="sidenav">
+  <a href="index.html">Dashboard</a>
+  <a href="attendance.html">Take Attendance</a>
+  <a href="manage.html">Manage Students</a>
+</div>
+<div class="main">
+  <table>
+    <tr>
+      <td>
+        <label for="class-selection">Class</label>
+      </td>
+      <td>
+        <select id="class-selection" onchange="updateStudentDisplay();">
+          <option value="" disabled selected>Select Class</option>
+          <option value="temp">temp</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="month-year-selection">Month/Year</label>
+      </td>
+      <td>
+        <select id="month-year-selection" onchange="updateStudentDisplay();">
+          <option value="" disabled selected>Select Month-Year</option>
+          <option value="temp">temp</option>
+          <option value="temp2">temp2</option>
+        </select>
+      </td>
+    </tr>
+  </table>
 
-    </div>
-  </body>
+  <hr>
+  <div id="student-display">
+
+  </div>
+</div>
+
+<script>
+    function updateStudentDisplay() {
+        let classSelectElement = document.getElementById("class-selection");
+        let selectedClass = classSelectElement.options[classSelectElement.selectedIndex].value;
+
+        let monthYearSelectElement = document.getElementById("month-year-selection");
+        let selectedMonthYear = monthYearSelectElement.options[monthYearSelectElement.selectedIndex].value;
+
+        // send call to backend and get result
+        let oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", function () {
+            console.log(selectedClass)
+            const responseJson = JSON.parse(this.response);
+            let template = '';
+            template += '<table border="1">';
+            template += '<tr>';
+            template += '<th>ID</th>';
+            template += '<th align="left">Name</th>';
+            template += `<th><a href="attendance.html?class=1&monthYear=201902">1</a></th>`;
+            template += '<th>2</th>';
+            template += '<th>3</th>';
+            template += '</tr>';
+            for (const item of responseJson) {
+                template += '<tr>';
+                template += `<td>${item['id']}</td>`;
+                template += `<td>${item['name']}</td>`;
+                template += `<td>X</td>`;
+                template += `<td>X</td>`;
+                template += `<td></td>`;
+                template += '</tr>';
+            }
+            template += '</table>';
+            document.getElementById("student-display").innerHTML = template
+        });
+        oReq.open("GET", "https://jsonplaceholder.typicode.com/users");
+        oReq.send();
+    }
+    updateStudentDisplay()
+</script>
+</body>
 </html>
