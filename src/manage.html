@@ -16,41 +16,60 @@
   <table>
     <tr>
       <td align="right">Name</td>
-      <td align="left"><input id="reg-name" type="text" name="name" value="" placeholder="Enter name" required></td>
+      <td align="left">
+        <input id="reg-name" type="text" name="reg-name" value="" placeholder="Enter name" required>
+      </td>
     </tr>
     <tr>
       <td>ID</td>
-      <td><input id="reg-id" type="text" name="id" value="" placeholder="Enter id" required></td>
+      <td>
+        <input id="reg-id" type="text" name="reg-id" value="" placeholder="Enter id" required>
+      </td>
     </tr>
     <tr>
       <td>Class</td>
-      <td><input id="reg-class" type="text" name="class" value="" placeholder="Enter class" required></td>
+      <td>
+        <input id="reg-class" type="text" name="reg-class" value="" placeholder="Enter class" required>
+      </td>
     </tr>
   </table>
   <button onclick="register()">Register</button>
   <h3>Update Student</h3>
-  <div>
-    <label>Name</label>
-    <input type="text" name="name" value="" placeholder="Enter name" required>
-  </div>
-  <div>
-    <label>ID</label>
-    <input type="text" name="id" value="" placeholder="Enter id" required>
-  </div>
-  <div>
-    <label>Class</label>
-    <input type="text" name="class" value="" placeholder="Enter class" required>
-  </div>
+  <table>
+    <tr>
+      <td align="right">Name</td>
+      <td align="left">
+        <input id="update-name" type="text" name="update-name" value="" placeholder="Enter name" required>
+      </td>
+    <tr>
+      <td align="right">ID</td>
+      <td align="left">
+        <input id="update-id" type="text" name="update-id" value="" placeholder="Enter id" required>
+      </td>
+    </tr>
+    <tr>
+      <td>Class</td>
+      <td>
+        <input id="update-class" type="text" name="update-class" value="" placeholder="Enter class" required>
+      </td>
+    </tr>
+  </table>
   <button onclick="update()">Update</button>
   <h3>Delete Student</h3>
-  <div>
-    <label>Name</label>
-    <input type="text" name="name" value="" placeholder="Enter name" required>
-  </div>
-  <div>
-    <label>ID</label>
-    <input type="text" name="id" value="" placeholder="Enter id" required>
-  </div>
+  <table>
+    <tr>
+      <td align="right">Name</td>
+      <td align="left">
+        <input id="del-name" type="text" name="del-name" value="" placeholder="Enter name" required>
+      </td>
+    <tr>
+      <td align="right">ID</td>
+      <td align="left">
+        <input id="del-id" type="text" name="del-id" value="" placeholder="Enter id" required>
+      </td>
+    </tr>
+    <tr>
+  </table>
   <button onclick="del()">Delete</button>
 </div>
 
@@ -88,10 +107,56 @@
 
     function update() {
         alert('Updated');
+        let updateNameElement = document.getElementById('update-name');
+        let updateIdElement = document.getElementById('update-id');
+        let updateClassElement = document.getElementById('update-class');
+        let data = {};
+        data.name = updateNameElement.value;
+        data.id = updateIdElement.value;
+        data.class = updateClassElement.value;
+        let studentData = JSON.stringify(data);
+        let updatexhr = new XMLHttpRequest();
+
+        updatexhr.open('PUT', url, true);
+        updatexhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+
+        updatexhr.onload = function () {
+            if (updatexhr.status >= 200 && updatexhr.status < 300) {
+                alert('Update is successful.');
+                updateNameElement.value = '';
+                updateIdElement.value = '';
+                updateClassElement.value = '';
+            } else {
+                alert('Update unsuccessful. Please try again later.');
+                // Need more error codes to tell type of error
+            }
+        };
+
+        updatexhr.send(studentData);
+
     }
 
     function del() {
-        alert('Deleted')
+        alert('Deleted');
+        let delNameElement = document.getElementById('del-name');
+        let delIdElement = document.getElementById('del-id');
+        let data = {};
+        data.name = delNameElement.value;
+        data.id = delIdElement.value;
+        let studentData = JSON.stringify(data);
+        let delxhr = new XMLHttpRequest();
+        delxhr.open("DELETE", url, true);
+        delxhr.onload = function () {
+            if (delxhr.status >= 200 && delxhr.status < 300) {
+                alert('Delete is successful.');
+            }
+            else {
+                alert('Delete is unsuccessful, try again later.');
+                // Need more error codes to tell type of error
+            }
+        }
+        delxhr.send(studentData);
+
     }
 </script>
 </body>
