@@ -27,9 +27,8 @@
       <td><input id="reg-class" type="text" name="class" value="" placeholder="Enter class" required></td>
     </tr>
   </table>
-  <button id="reg-button">Register</button>
   <button onclick="register()">Register</button>
-  <!-- <h3>Update Student</h3>
+  <h3>Update Student</h3>
   <div>
     <label>Name</label>
     <input type="text" name="name" value="" placeholder="Enter name" required>
@@ -52,7 +51,7 @@
     <label>ID</label>
     <input type="text" name="id" value="" placeholder="Enter id" required>
   </div>
-  <button onclick="delete()">Delete</button> -->
+  <button onclick="del()">Delete</button>
 </div>
 
 <script type="text/javascript">
@@ -87,15 +86,13 @@
         regxhr.send(studentData);
     }
 
-    let refListener = document.getElementById('reg-button');
-    refListener.addEventListener('click', register);
+    function update() {
+        alert('Updated');
+    }
 
-    // function update() {
-    //   alert('Updated');
-    // }
-    // function delete() {
-    //   alert('Deleted');
-    // }
+    function del() {
+        alert('Deleted')
+    }
 </script>
 </body>
 </html>

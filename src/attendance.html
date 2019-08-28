@@ -12,13 +12,24 @@
   <a href="manage.html">Manage Students</a>
 </div>
 <div class="main">
+  <div id="main"></div>
 
 </div>
 
 <script>
     let studentClass = window.location.search.match('class=(.+)&monthYear=(.+)')[1];
     let monthYear = window.location.search.match('class=(.+)&monthYear=(.+)')[2];
-    
+
+    let headerInformation = '';
+    headerInformation += '<h4>';
+    headerInformation += 'hello';
+    headerInformation += '';
+    headerInformation += '';
+    headerInformation += '</h4>';
+
+    let main = document.getElementById("main");
+
+    main.innerHTML = headerInformation
 </script>
 </body>
 </html>
