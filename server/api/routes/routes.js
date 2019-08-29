@@ -1,14 +1,24 @@
 'use strict';
-module.exports = function(app) {
-  var todoList = require('../controllers/CCFController');
+module.exports = function (app) {
+  const students = require('../controllers/StudentController');
+  const attendance = require('../controllers/AttendanceController');
 
-  // todoList Routes
   app.route('/students')
-    .get(todoList.getSomething)
-    .post(todoList.postSomething);
+    .get(students.getAll)
+    .post(students.create);
 
-  /*app.route('/tasks/:taskId')
-    .get(todoList.read_a_task)
-    .put(todoList.update_a_task)
-    .delete(todoList.delete_a_task);*/
+  app.route('/students/:studentId')
+    .get(students.get)
+    .put(students.update)
+    .delete(students.delete);
+
+  app.route('/attendance')
+    .get(attendance.getAll)
+    // TODO: BULK UPDATE MAY NOT BE EASY
+    .put(attendance.update) // Take attendance
+    .post(attendance.create); // Register student to a class
+
+  // TODO: RE-THINK ABOUT CASES WITH SPACES
+  app.route('/attendance/:classDesc')
+    .get(attendance.get);
 };

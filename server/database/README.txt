@@ -8,20 +8,26 @@ FLUSH PRIVILEGES;
 
 // SCHEMAS //
 CREATE TABLE STUDENT (
-    id varchar(200),
+    ID int AUTO_INCREMENT,
     first_name varchar(200),
-    last_name varchar(200)
-);
-
-CREATE TABLE CLASS (
-    id varchar(200)
+    last_name varchar(200),
+    PRIMARY KEY (ID)
 );
 
 CREATE TABLE ATTENDANCE (
-    student_id varchar(200),
-    class_id varchar(200)
-)
+    student_id int NOT NULL,
+    class_name varchar(200),
+    attended int DEFAULT 0,
+    CONSTRAINT class_attendance PRIMARY KEY (student_id, class_name),
+    FOREIGN KEY (student_id) REFERENCES student(ID)
+);
 
 // DATA //
 INSERT INTO STUDENT(FIRST_NAME, LAST_NAME) VALUES ('Ian', 'Chan');
 
+// NOT REQUIRED //
+CREATE TABLE CLASS (
+    ID int NOT NULL,
+    date_time_desc varchar(200),
+    PRIMARY KEY (ID)
+);
