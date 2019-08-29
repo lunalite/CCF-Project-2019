@@ -12,7 +12,7 @@ getStudents = function () {
   return new Promise(function (resolve, reject) {
     const connection = getConnection();
     connection.connect();
-    const query = `SELECT ID, first_name, last_name from STUDENT`;
+    const query = `SELECT ID, name from STUDENT`;
     connection.query(query, function (error, results, fields) {
       if (error) reject(error);
       resolve(results);
@@ -25,7 +25,7 @@ getStudent = function (studentId) {
   return new Promise(function (resolve, reject) {
     const connection = getConnection();
     connection.connect();
-    const query = `SELECT ID, first_name, last_name from STUDENT WHERE ID = ${studentId}`;
+    const query = `SELECT ID, name from STUDENT WHERE ID = ${studentId}`;
     connection.query(query, function (error, results, fields) {
       if (error) reject(error);
       resolve(results);
@@ -34,11 +34,11 @@ getStudent = function (studentId) {
   });
 };
 
-createStudent = function (firstName, lastName) {
+createStudent = function (name) {
   return new Promise(function (resolve, reject) {
     const connection = getConnection();
     connection.connect();
-    const query = `INSERT INTO STUDENT(first_name, last_name) VALUES (\'${firstName}\', \'${lastName}\')`;
+    const query = `INSERT INTO STUDENT(name) VALUES (\'${name}\')`;
     connection.query(query, function (error, results, fields) {
       if (error) reject(error);
       resolve(results);
@@ -60,11 +60,11 @@ deleteStudent = function (studentId) {
   });
 };
 
-updateStudent = function (studentId, firstName, lastName) {
+updateStudent = function (studentId, name) {
   return new Promise(function (resolve, reject) {
     const connection = getConnection();
     connection.connect();
-    const query = `UPDATE STUDENT SET first_name = \'${firstName}\', last_name = \'${lastName}\' WHERE ID = ${studentId}`;
+    const query = `UPDATE STUDENT SET name = \'${name}\' WHERE ID = ${studentId}`;
     connection.query(query, function (error, results, fields) {
       if (error) reject(error);
       resolve(results);
@@ -99,9 +99,8 @@ exports.get = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  createStudent(firstName, lastName)
+  const name = req.body.name;
+  createStudent(name)
     .then(function (results) {
       res.status(200).send('Student is registered!');
     })
@@ -125,9 +124,8 @@ exports.delete = function (req, res) {
 
 exports.update = function (req, res) {
   const studentId = req.params.studentId;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  updateStudent(studentId, firstName, lastName)
+  const name = req.body.name;
+  updateStudent(studentId, name)
     .then(function (results) {
       res.status(200).send('Student is updated!');
     })

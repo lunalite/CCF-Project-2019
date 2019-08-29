@@ -9,8 +9,7 @@ FLUSH PRIVILEGES;
 // SCHEMAS //
 CREATE TABLE STUDENT (
     ID int AUTO_INCREMENT,
-    first_name varchar(200),
-    last_name varchar(200),
+    name varchar(200),
     PRIMARY KEY (ID)
 );
 
@@ -23,7 +22,7 @@ CREATE TABLE ATTENDANCE (
 );
 
 // DATA //
-INSERT INTO STUDENT(FIRST_NAME, LAST_NAME) VALUES ('Ian', 'Chan');
+INSERT INTO STUDENT(name) VALUES ('Ian Chan');
 
 // NOT REQUIRED //
 CREATE TABLE CLASS (
