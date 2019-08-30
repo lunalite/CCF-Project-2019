@@ -13,49 +13,80 @@
   <a href="manage.html">Manage Students</a>
 </div>
 <div class="main">
+  <h3>Attendance Dashboard</h3>
   <div id="student-display"></div>
 </div>
 
 <script>
-    function updateStudentDisplay() {
+    function getStudentDisplay() {
         // send call to backend and get result
-        let oReq = new XMLHttpRequest();
-        let userReq = new XMLHttpRequest();
+        let attendanceReq = new XMLHttpRequest();
 
-        oReq.open("GET", `${basePath}${attendancePath}`);
-        oReq.onload = function () {
+        attendanceReq.open("GET", `${basePath}${attendancePath}`);
+        attendanceReq.onload = function () {
             const responseJson = JSON.parse(this.response);
+            let registeredClasses = [];
+            const mapOfStudent = {};
+
+            responseJson.forEach(student => {
+                registeredClasses.push(student['class_name']);
+            });
+            registeredClasses = [...new Set(registeredClasses)];
+            responseJson.forEach(student => {
+                let sid = student['student_id'];
+                let className = student['class_name'];
+                let attendance = student['attended'];
+
+                if (!mapOfStudent.hasOwnProperty(sid)) {
+                    mapOfStudent[sid] = new Array(registeredClasses.length).fill('');
+                }
+                let indexOfClassName = registeredClasses.indexOf(className);
+                mapOfStudent[sid][indexOfClassName] = attendance === 1 ? 'Yes' : 'No';
+            });
+
             let template = '';
-            template += '<table>';
+
+            template += '<table border="1">';
             template += '<tr>';
             template += '<th>ID</th>';
             template += '<th align="left">Name</th>';
-            for (const item of responseJson) {
-                template += `<th>${item['class_name']}</th>`;
-            }
+
+            registeredClasses.forEach(registeredClasses => {
+                template += `<th>${registeredClasses}</th>`;
+            });
             template += '</tr>';
-            for (const item of responseJson) {
-                userReq.open('GET', `${basePath}${studentPath}${item['student_id']}`, true);
-                userReq.onload = function () {
-                    console.log(this.response["ID"])
-                    console.log(this.response.ID)
-                    console.log(this.response)
-                    template += '<tr>';
-                    template += `<td>${item['student_id']}</td>`;
-                    template += `<td>${this.response.name}</td>`;
-                    template += `<td>${item['attended']}</td>`;
-                    template += '</tr>';
-                };
-                userReq.send();
+
+            for (const studentId in mapOfStudent) {
+                template += '<tr>';
+                template += `<td>${studentId}</td>`;
+                template += `<td id="name-${studentId}"></td>`;
+                mapOfStudent[studentId].forEach(attendance => {
+                    template += `<td>${attendance}</td>`;
+                });
+                template += '</tr>';
             }
             template += '</table>';
-            document.getElementById("student-display").innerHTML = template
+            document.getElementById("student-display").innerHTML = template;
+
+            populateStudentName(Object.keys(mapOfStudent))
         };
 
-        oReq.send();
+        attendanceReq.send();
     }
 
-    updateStudentDisplay()
+    function populateStudentName(studentIds) {
+        studentIds.forEach(studentId => {
+            let userReq = new XMLHttpRequest();
+            userReq.open('GET', `${basePath}${studentPath}${studentId}`, true);
+            userReq.onload = function () {
+                let responseJson = JSON.parse(this.response);
+                document.getElementById(`name-${studentId}`).innerText = responseJson['name']
+            };
+            userReq.send();
+        })
+    }
+
+    getStudentDisplay()
 </script>
 </body>
 </html>

@@ -49,44 +49,26 @@
 
     function updateAttendance() {
         let getReq = new XMLHttpRequest();
-        let postReq = new XMLHttpRequest();
-        let putReq = new XMLHttpRequest();
 
         let attList = document.getElementsByClassName("attendance-list");
         let classDesc = document.getElementById("classDesc").value;
 
-        postReq.open('POST', `${basePath}${attendancePath}`, true);
-        postReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        postReq.onload = function () {
-            alert('done');
-        };
-
-        putReq.open('PUT', `${basePath}${attendancePath}`, true);
-        putReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        putReq.onload = function () {
-            alert('done');
-        };
-
         getReq.open('GET', `${basePath}${attendancePath}${classDesc}`, true);
-
-        function updateAttendanceForStudent(studentId, attended) {
-            putReq.send(JSON.stringify({
-                studentId: studentId, classDesc: classDesc, attended: attended
-            }));
-        }
-
-        function addStudentToClass(studentId) {
-            postReq.send(JSON.stringify({
-                classDesc: classDesc, studentId: studentId
-            }));
-        }
-
         getReq.onload = function () {
+            let ids = [];
+            let response = JSON.parse(this.response);
+
+            if (response.length > 0) {
+                response.map(({student_id}) => {
+                    ids.push(student_id)
+                });
+            }
+
             for (const item of attList) {
                 let studentId = item.children[0].innerHTML;
                 let attended = item.children[2].firstChild.checked;
 
-                if (this.response === '') {
+                if (!ids.includes(studentId)) {
                     addStudentToClass(studentId);
                     updateAttendanceForStudent(studentId, attended);
                 } else {
@@ -96,6 +78,24 @@
         };
 
         getReq.send();
+
+        function updateAttendanceForStudent(studentId, attended) {
+            let putReq = new XMLHttpRequest();
+            putReq.open('PUT', `${basePath}${attendancePath}`, true);
+            putReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            putReq.send(JSON.stringify({
+                studentId: studentId, classDesc: classDesc, attended: attended
+            }));
+        }
+
+        function addStudentToClass(studentId) {
+            let postReq = new XMLHttpRequest();
+            postReq.open('POST', `${basePath}${attendancePath}`, true);
+            postReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            postReq.send(JSON.stringify({
+                classDesc: classDesc, studentId: studentId
+            }));
+        }
     }
 </script>
 </body>

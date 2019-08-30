@@ -77,7 +77,7 @@ exports.get = function (req, res) {
   getAttendance(className)
     .then(function (results) {
       console.log(results);
-      res.send(results[0]);
+      res.send(results);
     })
     .catch(function (err) {
       console.log('Promise rejection error: ' + err);
