@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="./style/style.css">
   <title>CCF Attendance</title>
+  <script type="text/javascript" src="./js/constants.js"></script>
 </head>
 <body>
 <div class="sidenav">
@@ -12,75 +13,48 @@
   <a href="manage.html">Manage Students</a>
 </div>
 <div class="main">
-  <table>
-    <tr>
-      <td>
-        <label for="class-selection">Class</label>
-      </td>
-      <td>
-        <select id="class-selection" onchange="updateStudentDisplay();">
-          <option value="" disabled selected>Select Class</option>
-          <option value="temp">temp</option>
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="month-year-selection">Month/Year</label>
-      </td>
-      <td>
-        <select id="month-year-selection" onchange="updateStudentDisplay();">
-          <option value="" disabled selected>Select Month-Year</option>
-          <option value="temp">temp</option>
-          <option value="temp2">temp2</option>
-        </select>
-      </td>
-    </tr>
-  </table>
-
-  <hr>
-  <div id="student-display">
-
-  </div>
+  <div id="student-display"></div>
 </div>
 
 <script>
     function updateStudentDisplay() {
-        let classSelectElement = document.getElementById("class-selection");
-        let selectedClass = classSelectElement.options[classSelectElement.selectedIndex].value;
-
-        let monthYearSelectElement = document.getElementById("month-year-selection");
-        let selectedMonthYear = monthYearSelectElement.options[monthYearSelectElement.selectedIndex].value;
-
         // send call to backend and get result
         let oReq = new XMLHttpRequest();
-        oReq.addEventListener("load", function () {
-            console.log(selectedClass)
+        let userReq = new XMLHttpRequest();
+
+        oReq.open("GET", `${basePath}${attendancePath}`);
+        oReq.onload = function () {
             const responseJson = JSON.parse(this.response);
             let template = '';
-            template += '<table border="1">';
+            template += '<table>';
             template += '<tr>';
             template += '<th>ID</th>';
             template += '<th align="left">Name</th>';
-            template += `<th><a href="attendance.html?class=1&day=20190201">1</a></th>`;
-            template += '<th>2</th>';
-            template += '<th>3</th>';
+            for (const item of responseJson) {
+                template += `<th>${item['class_name']}</th>`;
+            }
             template += '</tr>';
             for (const item of responseJson) {
-                template += '<tr>';
-                template += `<td>${item['id']}</td>`;
-                template += `<td>${item['name']}</td>`;
-                template += `<td>X</td>`;
-                template += `<td>X</td>`;
-                template += `<td></td>`;
-                template += '</tr>';
+                userReq.open('GET', `${basePath}${studentPath}${item['student_id']}`, true);
+                userReq.onload = function () {
+                    console.log(this.response["ID"])
+                    console.log(this.response.ID)
+                    console.log(this.response)
+                    template += '<tr>';
+                    template += `<td>${item['student_id']}</td>`;
+                    template += `<td>${this.response.name}</td>`;
+                    template += `<td>${item['attended']}</td>`;
+                    template += '</tr>';
+                };
+                userReq.send();
             }
             template += '</table>';
             document.getElementById("student-display").innerHTML = template
-        });
-        oReq.open("GET", "https://jsonplaceholder.typicode.com/users");
+        };
+
         oReq.send();
     }
+
     updateStudentDisplay()
 </script>
 </body>

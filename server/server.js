@@ -3,9 +3,11 @@ var express = require('express'),
   port = process.env.PORT || 9000,
   bodyParser = require('body-parser');
 
+var cors = require('cors');
+
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 
 var routes = require('./api/routes/routes.js'); //importing route
 routes(app); //register the route

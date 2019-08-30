@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="./style/style.css">
   <title>CCF Attendance</title>
+  <script type="text/javascript" src="./js/constants.js"></script>
 </head>
 <body>
 <div class="sidenav">
@@ -12,39 +13,31 @@
   <a href="manage.html">Manage Students</a>
 </div>
 <div class="main">
-  <div id="header-information"></div>
+  <div id="header-information">
+    <label for="classDesc">Add to class</label>
+    <input id="classDesc" type="text" name="class" value="" placeholder="YYYYMMDD" required>
+  </div>
   <div id="student-display"></div>
 </div>
 
 <script>
-    let [_, studentClass, day] = window.location.search.match('class=(.+)&day=(.+)');
-    let headerInformation = '';
-
-    headerInformation += `Class: ${studentClass}`;
-    headerInformation += '<br>';
-    headerInformation += `Day: ${day}`;
-    headerInformation += '<hr>';
-
-    let headerInformationElement = document.getElementById("header-information");
-    headerInformationElement.innerHTML = headerInformation;
-
     let oReq = new XMLHttpRequest();
-    oReq.open("GET", "https://jsonplaceholder.typicode.com/users", true);
+    oReq.open("GET", `${basePath}${studentPath}`, true);
     oReq.onload = function () {
         const responseJson = JSON.parse(this.response);
         let template = '';
-        template += '<table border="1">';
+        template += '<table>';
         template += '<tr>';
         template += '<th>ID</th>';
         template += '<th align="left">Name</th>';
         template += `<th>Attendance</th>`;
         template += '</tr>';
         for (const item of responseJson) {
-            template += '<tr>';
-            template += `<td>${item['id']}</td>`;
+            template += `<tr class="attendance-list">`;
+            template += `<td>${item['ID']}</td>`;
             template += `<td>${item['name']}</td>`;
             template += '<td align="center">';
-            template += `<input type="checkbox" name="attendance" value="${item['id']}"/>`;
+            template += `<input type="checkbox" name="attendance" value="${item['ID']}"/>`;
             template += '</td>';
             template += '</tr>';
         }
@@ -55,20 +48,54 @@
     oReq.send();
 
     function updateAttendance() {
-        let attendance = document.getElementsByName("attendance");
-        let data = [];
-        for (const item of attendance) {
-            data.push({id: item.value, present: item.checked});
+        let getReq = new XMLHttpRequest();
+        let postReq = new XMLHttpRequest();
+        let putReq = new XMLHttpRequest();
+
+        let attList = document.getElementsByClassName("attendance-list");
+        let classDesc = document.getElementById("classDesc").value;
+
+        postReq.open('POST', `${basePath}${attendancePath}`, true);
+        postReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        postReq.onload = function () {
+            alert('done');
+        };
+
+        putReq.open('PUT', `${basePath}${attendancePath}`, true);
+        putReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        putReq.onload = function () {
+            alert('done');
+        };
+
+        getReq.open('GET', `${basePath}${attendancePath}${classDesc}`, true);
+
+        function updateAttendanceForStudent(studentId, attended) {
+            putReq.send(JSON.stringify({
+                studentId: studentId, classDesc: classDesc, attended: attended
+            }));
         }
 
-        oReq.open('POST', 'https://nonexistent.link', true);
-        oReq.timeout = 1;
-        oReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        oReq.onload = function () {
-            let replacement = window.location.href.split('/').slice(-1);
-            window.location.href = window.location.href.replace(replacement, '');
+        function addStudentToClass(studentId) {
+            postReq.send(JSON.stringify({
+                classDesc: classDesc, studentId: studentId
+            }));
+        }
+
+        getReq.onload = function () {
+            for (const item of attList) {
+                let studentId = item.children[0].innerHTML;
+                let attended = item.children[2].firstChild.checked;
+
+                if (this.response === '') {
+                    addStudentToClass(studentId);
+                    updateAttendanceForStudent(studentId, attended);
+                } else {
+                    updateAttendanceForStudent(studentId, attended);
+                }
+            }
         };
-        oReq.send(JSON.stringify(data))
+
+        getReq.send();
     }
 </script>
 </body>
