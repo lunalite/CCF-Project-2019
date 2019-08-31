@@ -1,23 +1,20 @@
 # CCF-Project-2019
 
-## Frontend
+## Project Requirements
+* User should be able to register students in the application
+    * Only ___name___ will be required for registration
+* User should be able to manage registered students
+    * Updating students' names
+    * Removing any registered student
+* User should be able to manage all the students' attendance
+    * Updating the student's attendance for a given class - ___class___ input: YYYYMMDD, _e.g. 20190328_
 
-### Login
+## Thinking Process
+### Backend
+* Brainstorm on the database tables required for the above requirements
+    * Work out how student and class are related 
+* Formulate a rough outline of the api endpoints together with the payload that will be sent from the frontend
 
-Authenticates and authorizes user to access subsequent pages
-
-### Dashboard
-
-Page to search for attendance and to mark attendance according to selection of class and period.
-
-### Manage Student
-
-Page to CRUD student profiles
-
-#### Register Student
-
-#### Update Student
-
-#### Delete Student
-
-## Backend
+### Frontend
+* Discuss on the required web pages according to the various use cases
+    * Design how the pages will look like on paper 
