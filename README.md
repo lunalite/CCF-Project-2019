@@ -1,19 +1,23 @@
 # CCF-Project-2019
 
-## Login
+## Frontend
+
+### Login
 
 Authenticates and authorizes user to access subsequent pages
 
-## Dashboard
+### Dashboard
 
 Page to search for attendance and to mark attendance according to selection of class and period.
 
-## Manage Student
+### Manage Student
 
 Page to CRUD student profiles
 
-### Register Student
+#### Register Student
 
-### Update Student
+#### Update Student
 
-### Delete Student
+#### Delete Student
+
+## Backend

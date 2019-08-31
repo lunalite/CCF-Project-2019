@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="./style/style.css">
   <title>CCF Attendance</title>
+  <script type="text/javascript" src="./js/constants.js"></script>
 </head>
 <body>
 <div class="sidenav">
@@ -18,18 +19,6 @@
       <td align="right">Name</td>
       <td align="left">
         <input id="reg-name" type="text" name="reg-name" value="" placeholder="Enter name" required>
-      </td>
-    </tr>
-    <tr>
-      <td>ID</td>
-      <td>
-        <input id="reg-id" type="text" name="reg-id" value="" placeholder="Enter id" required>
-      </td>
-    </tr>
-    <tr>
-      <td>Class</td>
-      <td>
-        <input id="reg-class" type="text" name="reg-class" value="" placeholder="Enter class" required>
       </td>
     </tr>
   </table>
@@ -47,22 +36,16 @@
         <input id="update-id" type="text" name="update-id" value="" placeholder="Enter id" required>
       </td>
     </tr>
-    <tr>
-      <td>Class</td>
-      <td>
-        <input id="update-class" type="text" name="update-class" value="" placeholder="Enter class" required>
-      </td>
-    </tr>
   </table>
   <button onclick="update()">Update</button>
   <h3>Delete Student</h3>
   <table>
-    <tr>
+    <!-- <tr>
       <td align="right">Name</td>
       <td align="left">
         <input id="del-name" type="text" name="del-name" value="" placeholder="Enter name" required>
       </td>
-    <tr>
+    <tr> -->
       <td align="right">ID</td>
       <td align="left">
         <input id="del-id" type="text" name="del-id" value="" placeholder="Enter id" required>
@@ -74,29 +57,22 @@
 </div>
 
 <script type="text/javascript">
-    const url = 'https://nonexistent.link/student';
 
     function register() {
         alert('Registered');
         let regNameElement = document.getElementById('reg-name');
-        let regIdElement = document.getElementById('reg-id');
-        let regClassElement = document.getElementById('reg-class');
         let data = {};
         data.name = regNameElement.value;
-        data.id = regIdElement.value;
-        data.class = regClassElement.value;
         let studentData = JSON.stringify(data);
         let regxhr = new XMLHttpRequest();
 
-        regxhr.open('POST', url, true);
+        regxhr.open('POST', `${basePath}${studentPath}`, true);
         regxhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 
         regxhr.onload = function () {
             if (regxhr.status >= 200 && regxhr.status < 300) {
                 alert('Registration is successful.');
                 regNameElement.value = '';
-                regIdElement.value = '';
-                regClassElement.value = '';
             } else {
                 alert('Registration unsuccessful. Please try again later.')
             }
@@ -109,15 +85,12 @@
         alert('Updated');
         let updateNameElement = document.getElementById('update-name');
         let updateIdElement = document.getElementById('update-id');
-        let updateClassElement = document.getElementById('update-class');
         let data = {};
         data.name = updateNameElement.value;
-        data.id = updateIdElement.value;
-        data.class = updateClassElement.value;
         let studentData = JSON.stringify(data);
         let updatexhr = new XMLHttpRequest();
 
-        updatexhr.open('PUT', url, true);
+        updatexhr.open('PUT', `${basePath}${studentPath}${updateIdElement.value}`, true);
         updatexhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 
         updatexhr.onload = function () {
@@ -125,7 +98,6 @@
                 alert('Update is successful.');
                 updateNameElement.value = '';
                 updateIdElement.value = '';
-                updateClassElement.value = '';
             } else {
                 alert('Update unsuccessful. Please try again later.');
                 // Need more error codes to tell type of error
@@ -140,22 +112,21 @@
         alert('Deleted');
         let delNameElement = document.getElementById('del-name');
         let delIdElement = document.getElementById('del-id');
-        let data = {};
-        data.name = delNameElement.value;
-        data.id = delIdElement.value;
-        let studentData = JSON.stringify(data);
+        // let data = {};
+        // data.id = delIdElement.value;
+        // let studentData = JSON.stringify(data);
         let delxhr = new XMLHttpRequest();
-        delxhr.open("DELETE", url, true);
+        delxhr.open("DELETE", `${basePath}${studentPath}${delIdElement.value}`, true);
         delxhr.onload = function () {
             if (delxhr.status >= 200 && delxhr.status < 300) {
                 alert('Delete is successful.');
+                delIdElement.value = '';
             }
             else {
                 alert('Delete is unsuccessful, try again later.');
-                // Need more error codes to tell type of error
             }
         }
-        delxhr.send(studentData);
+        delxhr.send();
 
     }
 </script>
